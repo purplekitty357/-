@@ -19,17 +19,18 @@
             <h1 class="text-2xl font-bold text-cyan-400 flex items-center gap-2">
                 🧬 OV-Delivery Sim <span class="text-sm font-normal text-slate-400">| 종양용해바이러스 체내 전달 시뮬레이터</span>
             </h1>
-            <div class="text-xs bg-cyan-950 text-cyan-400 border border-cyan-800 px-3 py-1.5 rounded-full font-semibold">
-                세브란스 연구팀 Super-Carrier 모델 연동
-            </div>
+            <button onclick="document.getElementById('refModal').classList.remove('hidden')"
+                class="text-xs bg-cyan-950 text-cyan-400 border border-cyan-800 px-3 py-1.5 rounded-full font-semibold hover:bg-cyan-900 transition cursor-pointer">
+                📚 모델링 근거 및 참고문헌
+            </button>
         </div>
     </header>
 
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl flex flex-col gap-5">
             <h2 class="text-xl font-bold text-slate-200 border-b border-slate-700 pb-2">⚙️ 입력 매개변수 설정</h2>
-            
+
             <div>
                 <label class="block text-sm font-semibold text-slate-400 mb-2">1. 대상 종양 (Target Tumor)</label>
                 <select id="tumor" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
@@ -44,8 +45,8 @@
             <div>
                 <label class="block text-sm font-semibold text-slate-400 mb-2">2. 종양용해바이러스 선택</label>
                 <select id="virus" class="w-full bg-slate-900 border border-slate-600 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-cyan-500">
-                    <option value="vsv">VSV (복제 주기 6h / 초고속 방출 / 면역 취약)</option>
-                    <option value="vv">VV (백시니아 / 잠복기 최대 48h / 안정적 전달)</option>
+                    <option value="vsv">VSV (복제 주기 약 6h / 초고속 방출 / 면역 취약)</option>
+                    <option value="vv">VV (백시니아 / eclipse 최대 48h / 안정적 전달)</option>
                     <option value="oad">oAd (아데노바이러스 / 세포용해 2~3일 / 유전자 조작 용이)</option>
                 </select>
             </div>
@@ -58,7 +59,7 @@
                     <option value="nsc">신경줄기세포 (NSC / 고유 뇌 친화성)</option>
                     <option value="tcell">T세포 / 성숙 수지상세포 (Mature DC)</option>
                     <option value="mm1">골수종 세포주 (MM1)</option>
-                    <option value="severance">★ 세브란스 연구팀 변형 모델 (Super-Carrier)</option>
+                    <option value="severance">★ 연세대·세브란스 3중 유전자 변형 MSC (2022)</option>
                 </select>
             </div>
 
@@ -77,10 +78,14 @@
             <button onclick="runSimulation()" class="w-full mt-4 bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition duration-200 shadow-lg shadow-cyan-500/20 cursor-pointer">
                 🔬 시뮬레이션 분석 시작
             </button>
+
+            <p class="text-[10px] text-slate-500 leading-relaxed border-t border-slate-700 pt-3">
+                ※ 본 시뮬레이터는 실제 정량 약동학(PK) 모델이 아니라, 문헌에서 보고된 정성적 경향과 일부 정량 데이터를 결합해 만든 <strong>교육용 휴리스틱 모델</strong>입니다. 절대적 수치보다는 "운반체·경로·바이러스 조합에 따라 전달 효율이 어떻게 달라지는가"라는 상대적 경향을 보여주는 데 목적이 있습니다.
+            </p>
         </div>
 
         <div class="lg:col-span-2 flex flex-col gap-6">
-            
+
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl">
                 <h3 class="text-md font-bold text-slate-300 mb-3 flex items-center gap-2">
                     <span class="animate-pulse inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
@@ -90,24 +95,24 @@
                     <div class="text-slate-500">// 시스템 대기 중... 매개변수를 지정한 후 시뮬레이션을 실행하십시오.</div>
                 </div>
                 <div id="warningBox" class="hidden mt-3 p-3 bg-red-950/80 border border-red-700 text-red-300 text-xs rounded-xl font-medium animate-bounce">
-                    ⚠️ 경고: [독성 경고] 운반체 없이 정맥 주사 시 종양 도달 전 대부분 소실되며 간 및 폐 조직에 과도하게 축적되어 전신 독성을 유발할 수 있습니다.
+                    ⚠️ 경고: 운반체 없이 정맥 주사 시 종양 도달 전 대부분 소실되며 간 및 폐 조직에 과도하게 축적되어 전신 독성을 유발할 수 있습니다.
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-5 gap-6 flex-1">
                 <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl md:col-span-2 flex flex-col justify-between">
-                    <h3 class="text-md font-bold text-slate-300 mb-2">📊 최종 종양 도달률 (%)</h3>
+                    <h3 class="text-md font-bold text-slate-300 mb-2">📊 최종 종양 도달률 (%, 로그 스케일)</h3>
                     <div class="relative w-full h-52 flex items-center justify-center">
                         <canvas id="deliveryChart"></canvas>
                     </div>
-                    <div class="mt-2 text-center text-2xs text-slate-400">
-                        * 단독 투여 기준점(0.001%) 대비 격차 비교 (로그 스케일)
+                    <div class="mt-2 text-center text-[10px] text-slate-400">
+                        * 단독 투여 기준점(0.005%) 대비 격차 비교
                     </div>
                 </div>
 
                 <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-xl md:col-span-3 flex flex-col">
                     <h3 class="text-md font-bold text-slate-300 mb-4">🗺️ 체내 장기별 바이러스 분포도 히트맵</h3>
-                    
+
                     <div class="flex flex-1 items-center justify-center gap-8">
                         <div class="relative w-40 h-64 bg-slate-950 rounded-2xl border border-slate-700 p-2 flex items-center justify-center">
                             <div class="absolute inset-0 opacity-10 flex items-center justify-center">
@@ -116,12 +121,12 @@
                                 </svg>
                             </div>
 
-                            <div id="node-brain" class="heatmap-organ absolute top-4 w-9 h-9 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-2xs font-bold text-slate-300">뇌</div>
-                            <div id="node-lung" class="heatmap-organ absolute top-16 w-16 h-8 rounded-md bg-slate-800 border border-slate-600 flex items-center justify-center text-2xs font-bold text-slate-300">폐</div>
-                            <div id="node-liver" class="heatmap-organ absolute top-28 left-6 w-12 h-8 rounded-br-2xl bg-slate-800 border border-slate-600 flex items-center justify-center text-2xs font-bold text-slate-300">간</div>
-                            <div id="node-spleen" class="heatmap-organ absolute top-28 right-6 w-10 h-7 rounded-bl-xl bg-slate-800 border border-slate-600 flex items-center justify-center text-2xs font-bold text-slate-300">비장</div>
-                            <div id="node-peritoneum" class="heatmap-organ absolute top-38 w-14 h-8 rounded-sm bg-slate-800 border border-slate-600 flex items-center justify-center text-2xs font-bold text-slate-300">복막</div>
-                            <div id="node-target" class="heatmap-organ absolute bottom-4 w-20 h-8 rounded-full bg-slate-800 border border-slate-500 flex items-center justify-center text-2xs font-bold text-slate-200">표적종양</div>
+                            <div id="node-brain" class="heatmap-organ absolute top-4 w-9 h-9 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-300">뇌</div>
+                            <div id="node-lung" class="heatmap-organ absolute top-16 w-16 h-8 rounded-md bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-300">폐</div>
+                            <div id="node-liver" class="heatmap-organ absolute top-28 left-6 w-12 h-8 rounded-br-2xl bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-300">간</div>
+                            <div id="node-spleen" class="heatmap-organ absolute top-28 right-6 w-10 h-7 rounded-bl-xl bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-300">비장</div>
+                            <div id="node-peritoneum" class="heatmap-organ absolute top-38 w-14 h-8 rounded-sm bg-slate-800 border border-slate-600 flex items-center justify-center text-[10px] font-bold text-slate-300">복막</div>
+                            <div id="node-target" class="heatmap-organ absolute bottom-4 w-20 h-8 rounded-full bg-slate-800 border border-slate-500 flex items-center justify-center text-[10px] font-bold text-slate-200">표적종양</div>
                         </div>
 
                         <div class="flex-1 space-y-2 text-xs">
@@ -131,7 +136,7 @@
                             <div class="flex justify-between items-center"><span class="text-slate-400">🟣 비장(Spleen):</span> <span id="val-spleen" class="font-mono font-bold text-slate-300">0%</span></div>
                             <div class="flex justify-between items-center"><span class="text-slate-400">🕸️ 복막(Perit.):</span> <span id="val-peritoneum" class="font-mono font-bold text-slate-300">0%</span></div>
                             <div class="flex justify-between items-center"><span class="text-cyan-400">🎯 표적 영역:</span> <span id="val-target" class="font-mono font-bold text-cyan-400">0%</span></div>
-                            <div class="pt-2 border-t border-slate-700 flex gap-1 items-center justify-start text-2xs text-slate-500">
+                            <div class="pt-2 border-t border-slate-700 flex gap-1 items-center justify-start text-[10px] text-slate-500">
                                 <span class="w-2 h-2 bg-slate-800 rounded-sm"></span>낮음
                                 <span class="w-2 h-2 bg-amber-500 rounded-sm"></span>보통
                                 <span class="w-2 h-2 bg-red-600 rounded-sm"></span>집중형 독성
@@ -143,15 +148,15 @@
 
             <div class="grid grid-cols-3 gap-4">
                 <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 text-center">
-                    <div class="text-2xs text-slate-400 font-medium">종양 도달 소요시간</div>
+                    <div class="text-[10px] text-slate-400 font-medium">종양 도달 소요시간</div>
                     <div id="infoTime" class="text-md font-bold text-cyan-400 mt-1">-</div>
                 </div>
                 <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 text-center">
-                    <div class="text-2xs text-slate-400 font-medium">면역 회피 지수</div>
+                    <div class="text-[10px] text-slate-400 font-medium">면역 회피 지수</div>
                     <div id="infoImmune" class="text-md font-bold text-amber-400 mt-1">-</div>
                 </div>
                 <div class="bg-slate-800/60 p-4 rounded-xl border border-slate-700/60 text-center">
-                    <div class="text-2xs text-slate-400 font-medium">최종 패키지 안전 생존율</div>
+                    <div class="text-[10px] text-slate-400 font-medium">최종 패키지 안전 생존율</div>
                     <div id="infoSurvival" class="text-md font-bold text-emerald-400 mt-1">-</div>
                 </div>
             </div>
@@ -160,222 +165,293 @@
     </main>
 
     <footer class="bg-slate-950 p-4 text-center text-xs text-slate-500 border-t border-slate-800">
-        Oncolytic Virus Delivery System Dynamics Simulator Engine
+        Oncolytic Virus Delivery System Dynamics Simulator Engine — 교육용 정성적 모델
     </footer>
 
+    <!-- 참고문헌 모달 -->
+    <div id="refModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-y-auto p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-cyan-400">모델링 근거 및 참고문헌</h3>
+                <button onclick="document.getElementById('refModal').classList.add('hidden')" class="text-slate-400 hover:text-white text-xl leading-none">&times;</button>
+            </div>
+            <ul class="text-xs text-slate-300 space-y-3 list-disc list-inside">
+                <li><strong>Sarkisova et al., "Cell Carriers for Oncolytic Virus Delivery: Prospects for Systemic Administration"</strong>, Cancers 2025, 17, 2296. — 세포 크기별 미세혈관 포획(MSC 15–30µm vs 단핵구 12–20µm), VSV 복제주기(~6h), CXCR4-CXCL12 골수/뇌 귀소, T세포 CCR7 림프절 귀소, IP 투여-복막암 매칭 근거.</li>
+                <li><strong>Zhu et al., "Emerging delivery strategy for oncolytic virotherapy"</strong>, Molecular Therapy: Oncology 2024, 32. — 나노입자·세포막 유래 소포체 전달 전략, 전신 투여 시 RES에 의한 청소 문제, MSC/NSC 임상시험 현황.</li>
+                <li><strong>연세대 의과대학·세브란스병원 (송재진·최혜진 교수팀), 2022</strong> — 3중 유전자 변형 MSC 운반체: 종양 도달률 10% 이상, 바이러스 단독 대비 최대 1만 배, 기존 MSC 대비 최대 100배, 도달 시간 6시간 이내, 표적 외 장기 검출 거의 없음 (Molecular Therapy Oncolytics 게재).</li>
+            </ul>
+            <p class="text-[10px] text-slate-500 mt-4 border-t border-slate-700 pt-3">
+                본 시뮬레이터의 바이러스-운반체-경로 조합별 수치는 위 문헌에서 보고된 정성적 경향(어떤 조합이 유리/불리한지)을 기반으로 설계자가 상대적 스케일을 부여한 것이며, 실제 임상/전임상 데이터의 절대값과 일치하지 않을 수 있습니다.
+            </p>
+        </div>
+    </div>
+
     <script>
-        let deliveryChart = null;
-
-        window.onload = function() {
-            const ctx1 = document.getElementById('deliveryChart').getContext('2d');
-            deliveryChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: ['단독 투여 기준점', '현재 조건 설정 조합'],
-                    datasets: [{
-                        data: [0.005, 0],
-                        backgroundColor: ['#475569', '#06b6d4'],
-                        borderWidth: 0,
-                        borderRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: { 
-                        y: { beginAtZero: true, type: 'logarithmic', grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
-                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
-                    },
-                    plugins: { legend: { display: false } }
-                }
-            });
-        };
-
-        async function runSimulation() {
-            const tumor = document.getElementById('tumor').value;
-            const virus = document.getElementById('virus').value;
-            const carrier = document.getElementById('carrier').value;
-            const route = document.getElementById('route').value;
-            
-            const logBox = document.getElementById('statusLog');
-            const warnBox = document.getElementById('warningBox');
-            
-            logBox.innerHTML = ""; 
-            warnBox.classList.add('hidden');
-
-            // 1. 초기 연산 변수 설정
-            let deliveryRate = 0.005; 
-            let survivalRate = 100;
-            let timeTaken = "6시간 이내";
-            let immuneIndex = "보통";
-            
-            let bBrain = 1, bLung = 5, bLiver = 45, bSpleen = 35, bPeritoneum = 13, bTarget = 1;
-
-            const addLog = (text, delay) => {
-                return new Promise(resolve => setTimeout(() => {
-                    logBox.innerHTML += `<div>${text}</div>`;
-                    logBox.scrollTop = logBox.scrollHeight;
-                    resolve();
-                }, delay));
-            };
-
-            await addLog(`🧬 [초기화] 주입 시퀀스 개시 -> 바이러스: ${virus.toUpperCase()} | 운반체: ${carrier.toUpperCase()} | 투여경로: ${route.toUpperCase()}`, 100);
-
-            // 2. 알고리즘 분기 분석 및 특수 연산 장치 가동
-            
-            // 특수조건 1: 세브란스 변형 모델 (Super-Carrier) 처리
-            if (carrier === 'severance') {
-                await addLog(`✨ [특수 기전] 세브란스 연구팀 변형 모델(Super-Carrier) 인식 완료.`, 200);
-                await addLog(`⚡ 초고속 장기 장벽 회피 알고리즘이 구동되어 전신 장기 포획을 차단합니다.`, 200);
-                deliveryRate = 12.5; 
-                survivalRate = 98.5;
-                timeTaken = "6시간 이내 (안정 고속 도달)";
-                immuneIndex = "최상 (완벽 회피)";
-                bTarget = 45; bLiver = 20; bLung = 15; bSpleen = 15; bBrain = 3; bPeritoneum = 2;
-            } else {
-                // 일반 로직 분석
-                // Stage 1: 혈류 내 면역 장벽 및 운반체 유효성 검사
-                if (carrier === 'naked') {
-                    survivalRate -= 94;
-                    immuneIndex = "최하 (직접 노출)";
-                    if (route === 'iv') {
-                        // 특수조건 3: Naked 한계 및 정맥주사 독성 경고
-                        deliveryRate = 0.0008;
-                        bLiver = 65; bLung = 25; bSpleen = 9.99; bTarget = 0.01;
-                        warnBox.classList.remove('hidden');
-                        await addLog(`🚨 [위험 관찰] 운반체 없는 단독 정맥 투여 감지. 중화 항체 및 보체 시스템에 의해 대부분 사멸합니다.`, 300);
-                    }
-                } else {
-                    survivalRate -= 15;
-                    immuneIndex = "우수 (세포 차폐)";
-                }
-
-                // 시나리오 매칭 검증
-                if (tumor === 'brain') {
-                    await addLog(`🧠 대상 병변: 뇌 조직 내부 (교모세포종 및 뇌전이 시나리오)`, 200);
-                    if (carrier === 'nsc' && ['ic', 'ia', 'in'].includes(route)) {
-                        await addLog(`🎯 [매치 성공] NSC 고유의 뇌 조직 친화성(Neuroprotective homing) 발동. BBB 우회/통과 성공.`, 300);
-                        deliveryRate = 6.8;
-                        bBrain = 40; bTarget = 30; bLiver = 15; bLung = 10; bSpleen = 5;
-                    } else {
-                        await addLog(`⚠️ [전달 제한] 일반 운반체 또는 정맥 주사는 혈액-뇌 장벽(BBB) 통과 효율이 현저히 저하됩니다.`, 300);
-                        deliveryRate = 0.05;
-                        bLiver = 50; bLung = 30; bBrain = 2; bTarget = 1;
-                    }
-                } 
-                else if (tumor === 'lung_liver') {
-                    await addLog(`🫁 대상 병변: 폐 및 간 영역 (전이성 종양 시나리오)`, 200);
-                    if (carrier === 'msc' && route === 'iv') {
-                        await addLog(`🎯 [매치 성공] MSC 대형 입자의 특성 역이용. 폐 모세혈관 걸림 현상(Lung barrier)을 표적 기전으로 전환.`, 300);
-                        deliveryRate = 8.5;
-                        bLung = 55; bLiver = 25; bTarget = 15; bSpleen = 4; bBrain = 1;
-                    } else {
-                        deliveryRate = 1.2;
-                        bLiver = 50; bLung = 20; bSpleen = 20; bTarget = 5;
-                    }
-                } 
-                else if (tumor === 'lymph') {
-                    await addLog(`🩸 대상 병변: 림프절 전이암 구역`, 200);
-                    if ((carrier === 'tcell') && route === 'iv') {
-                        await addLog(`🎯 [매치 성공] CCR7 수용체 활성화 기반 림프 구역 히치하이킹 유도 메커니즘 전개.`, 300);
-                        deliveryRate = 7.2;
-                        bSpleen = 45; bTarget = 25; bLiver = 20; bLung = 8; bBrain = 2;
-                    } else {
-                        deliveryRate = 0.8;
-                        bLiver = 60; bSpleen = 20; bTarget = 3;
-                    }
-                } 
-                else if (tumor === 'peritoneal') {
-                    await addLog(`🕸️ 대상 병변: 복막 전이암 (난소/췌장암 환경)`, 200);
-                    if (['msc', 'nsc'].includes(carrier) && route === 'ip') {
-                        await addLog(`🎯 [매치 성공] 복강 직접 투여(IP)를 통한 복막 미세환경 부착력 극대화 프로토콜 활성화.`, 300);
-                        deliveryRate = 9.4;
-                        bPeritoneum = 60; bTarget = 25; bLiver = 10; bLung = 4; bBrain = 1;
-                    } else {
-                        deliveryRate = 0.4;
-                        bLiver = 55; bPeritoneum = 10; bTarget = 2;
-                    }
-                } 
-                else if (tumor === 'bone') {
-                    await addLog(`🦴 대상 병변: 골수 내부 및 골전이암 추적`, 200);
-                    if ((carrier === 'msc' || carrier === 'mm1') && route === 'iv') {
-                        await addLog(`🎯 [매치 성공] CXCR4-CXCL12 케모카인 축 유도 결합을 통한 골수 침투 최적화 진행.`, 300);
-                        deliveryRate = 6.1;
-                        bTarget = 35; bLiver = 35; bLung = 15; bSpleen = 13; bBrain = 2;
-                    } else {
-                        deliveryRate = 0.3;
-                        bLiver = 60; bLung = 20; bTarget = 1;
-                    }
-                }
-
-                // 특수조건 2: 바이러스-운반체 궁합 페널티 & 보너스 연산
-                if (virus === 'vsv' && carrier !== 'severance') {
-                    // VSV는 복제가 빨라 특정 우회 경로가 없으면 이동 중 조기 사멸 유발 모델링
-                    if (route === 'iv' && carrier !== 'tcell') {
-                        await addLog(`⚠️ [디버프] VSV의 짧은 복제주기(6h) 대비 이동 지연 발생 -> 운반체 조기 파괴 페널티 부여.`, 300);
-                        deliveryRate *= 0.3;
-                        survivalRate -= 35;
-                    }
-                } else if (virus === 'vv') {
-                    if (tumor === 'bone' || tumor === 'lymph') {
-                        await addLog(`✨ [시너지] 백시니아 바이러스(VV)의 긴 잠복기 특성이 장거리 표적 이동에 보너스 효율을 부여합니다.`, 300);
-                        deliveryRate *= 1.4;
-                    }
-                }
+    /*
+     * ============================================================
+     * 시나리오 데이터 테이블
+     * 각 종양 유형별로 "운반체+경로가 최적 조합일 때"와 "그렇지 않을 때"의
+     * 전달률/분포를 정의합니다. 근거는 각 항목의 ref 필드 참고.
+     * ============================================================
+     */
+    const SCENARIO_TABLE = {
+        brain: {
+            label: "뇌 조직 (교모세포종 및 뇌전이 시나리오)",
+            isMatch: (carrier, route) => carrier === 'nsc' && ['ic', 'ia', 'in'].includes(route),
+            match: {
+                deliveryRate: 6.8,
+                dist: { brain: 40, target: 30, liver: 15, lung: 10, spleen: 5, peritoneum: 0 },
+                msg: "NSC 고유의 뇌 조직 친화성(SCF/c-Kit, CXCR4-CXCL12 축) 발동 → BBB 통과 성공",
+                ref: "Sarkisova et al. 2025, §3.2"
+            },
+            mismatch: {
+                deliveryRate: 0.05,
+                dist: { brain: 2, target: 1, liver: 50, lung: 30, spleen: 5, peritoneum: 0 },
+                msg: "일반 운반체 또는 정맥 주사는 혈액-뇌 장벽(BBB) 통과 효율이 현저히 저하",
+                ref: "Sarkisova et al. 2025, §3.2"
             }
-
-            // 시간 텍스트 설정
-            if (carrier === 'severance') timeTaken = "6시간 이내 (초고속 제어)";
-            else if (virus === 'vsv') timeTaken = "약 6시간 내외 (신속 방출)";
-            else if (virus === 'vv') timeTaken = "최대 48시간 (지연 잠복성)";
-            else timeTaken = "2~3일 (용해성 완만 방출)";
-
-            if (survivalRate < 0) survivalRate = 0.1;
-
-            await addLog(`🏁 [시뮬레이션 완료] 연산 정량 데이터 도출 완료.`, 200);
-
-            // 3. UI 지표 및 차트, 인체 히트맵 동적 드로잉
-            document.getElementById('infoTime').innerText = timeTaken;
-            document.getElementById('infoImmune').innerText = immuneIndex;
-            document.getElementById('infoSurvival').innerText = `${survivalRate.toFixed(1)}%`;
-
-            // 차트 수치 업데이트
-            deliveryChart.data.datasets[0].data[1] = deliveryRate;
-            deliveryChart.update();
-
-            // 인체 히트맵 색상 및 스케일 제어 함수
-            const updateOrganNode = (id, valId, percent) => {
-                const node = document.getElementById(id);
-                document.getElementById(valId).innerText = `${percent}%`;
-                
-                // 수치에 따른 히트맵 컬러 인덱스 변경 (RGBA 동적 주입)
-                let r = 71, g = 85, b = 105; // Base Slate color
-                if (percent > 0 && percent <= 15) { r = 245; g = 158; b = 11; } // Amber (낮은 축적)
-                else if (percent > 15 && percent <= 40) { r = 249; g = 115; b = 22; } // Orange (경계성 축적)
-                else if (percent > 40) { r = 220; g = 38; b = 38; } // Red (고농도/독성 위험 축적)
-                
-                node.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.85)`;
-                node.style.boxShadow = percent > 30 ? `0 0 15px rgba(${r}, ${g}, ${b}, 0.6)` : 'none';
-            };
-
-            // 각 노드 히트맵 상태 주입
-            updateOrganNode('node-brain', 'val-brain', Math.round(bBrain));
-            updateOrganNode('node-lung', 'val-lung', Math.round(bLung));
-            updateOrganNode('node-liver', 'val-liver', Math.round(bLiver));
-            updateOrganNode('node-spleen', 'val-spleen', Math.round(bSpleen));
-            updateOrganNode('node-peritoneum', 'val-peritoneum', Math.round(bPeritoneum));
-            
-            // 표적 영역은 유도 성공 메트릭이므로 사이언 블루 컬러 레이어 적용
-            const targetNode = document.getElementById('node-target');
-            document.getElementById('val-target').innerText = `${deliveryRate.toFixed(3)}%`;
-            if (deliveryRate > 5) {
-                targetNode.style.backgroundColor = 'rgba(6, 182, 212, 0.9)';
-                targetNode.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.8)';
-            } else {
-                targetNode.style.backgroundColor = 'rgba(15, 23, 42, 0.8)';
-                targetNode.style.boxShadow = 'none';
+        },
+        lung_liver: {
+            label: "폐 및 간 영역 (전이성 종양 시나리오)",
+            isMatch: (carrier, route) => carrier === 'msc' && route === 'iv',
+            match: {
+                deliveryRate: 8.5,
+                dist: { brain: 1, target: 15, liver: 25, lung: 55, spleen: 4, peritoneum: 0 },
+                msg: "MSC 대형 입자의 폐 모세혈관 걸림 현상(Lung barrier)을 표적 기전으로 역이용",
+                ref: "Sarkisova et al. 2025, §3.1"
+            },
+            mismatch: {
+                deliveryRate: 1.2,
+                dist: { brain: 1, target: 5, liver: 50, lung: 20, spleen: 20, peritoneum: 0 },
+                msg: "운반체 없이는 폐/간 미세혈관에서 표적성 없이 분산",
+                ref: "Sarkisova et al. 2025, §3.1"
+            }
+        },
+        lymph: {
+            label: "림프절 전이암 구역",
+            isMatch: (carrier, route) => carrier === 'tcell' && route === 'iv',
+            match: {
+                deliveryRate: 7.2,
+                dist: { brain: 2, target: 25, liver: 20, lung: 8, spleen: 45, peritoneum: 0 },
+                msg: "naive T세포의 CCR7 발현 기반 림프절 귀소(homing) 활용",
+                ref: "Sarkisova et al. 2025, §4.1"
+            },
+            mismatch: {
+                deliveryRate: 0.8,
+                dist: { brain: 2, target: 3, liver: 60, lung: 10, spleen: 20, peritoneum: 0 },
+                msg: "림프절 특이적 귀소 기전 없이는 도달률 저조",
+                ref: "Sarkisova et al. 2025, §4.1"
+            }
+        },
+        peritoneal: {
+            label: "복막 전이암 (난소/췌장암 환경)",
+            isMatch: (carrier, route) => ['msc', 'nsc'].includes(carrier) && route === 'ip',
+            match: {
+                deliveryRate: 9.4,
+                dist: { brain: 1, target: 25, liver: 10, lung: 4, spleen: 0, peritoneum: 60 },
+                msg: "복강 직접 투여(IP)로 복막 미세환경 부착력 극대화",
+                ref: "Sarkisova et al. 2025, §3.1/3.2"
+            },
+            mismatch: {
+                deliveryRate: 0.4,
+                dist: { brain: 1, target: 2, liver: 55, lung: 5, spleen: 5, peritoneum: 10 },
+                msg: "IP 경로가 아니면 복막 미세환경 도달률 급감",
+                ref: "Sarkisova et al. 2025, §3.1/3.2"
+            }
+        },
+        bone: {
+            label: "골수 내부 및 골전이암 추적",
+            isMatch: (carrier, route) => (carrier === 'msc' || carrier === 'mm1') && route === 'iv',
+            match: {
+                deliveryRate: 6.1,
+                dist: { brain: 2, target: 35, liver: 35, lung: 15, spleen: 13, peritoneum: 0 },
+                msg: "CXCR4-CXCL12 케모카인 축 유도를 통한 골수 침투 최적화",
+                ref: "Sarkisova et al. 2025, §3.4"
+            },
+            mismatch: {
+                deliveryRate: 0.3,
+                dist: { brain: 1, target: 1, liver: 60, lung: 20, spleen: 18, peritoneum: 0 },
+                msg: "골수 특이적 귀소 기전 없이는 도달률 매우 낮음",
+                ref: "Sarkisova et al. 2025, §3.4"
             }
         }
+    };
+
+    // 세브란스 3중 유전자 변형 MSC 운반체 (2022) — 실측 보도자료 기반 수치
+    const SEVERANCE_CARRIER = {
+        deliveryRate: 12,          // 종양 도달률 10% 이상 보고 → 12%로 설정
+        survivalRate: 98.5,
+        timeTaken: "6시간 이내",
+        immuneIndex: "최상 (표적 외 장기 검출 거의 없음)",
+        dist: { brain: 2, target: 55, liver: 15, lung: 12, spleen: 10, peritoneum: 6 },
+        msg: "3중 유전자 변형 MSC 인식 — 종양화 위험 차단 + 종양 특이적 귀소 능력 강화",
+        subMsg: "보고된 성능: 나선 투여 대비 최대 1만 배, 기존 MSC 대비 약 100배, 6시간 이내 도달, 표적 외 장기 검출 거의 없음",
+        ref: "연세대·세브란스병원 2022 (Molecular Therapy Oncolytics)"
+    };
+
+    let deliveryChart = null;
+
+    window.onload = function () {
+        const ctx1 = document.getElementById('deliveryChart').getContext('2d');
+        deliveryChart = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['단독 투여 기준점', '현재 조건 설정 조합'],
+                datasets: [{
+                    data: [0.005, 0],
+                    backgroundColor: ['#475569', '#06b6d4'],
+                    borderWidth: 0,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, type: 'logarithmic', grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                    x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    };
+
+    function addLog(logBox, text, delay) {
+        return new Promise(resolve => setTimeout(() => {
+            logBox.innerHTML += `<div>${text}</div>`;
+            logBox.scrollTop = logBox.scrollHeight;
+            resolve();
+        }, delay));
+    }
+
+    // 바이러스 특성에 따른 전달률/생존율 보정
+    function applyVirusModifier(result, virus, carrier, route) {
+        const out = { ...result };
+        if (virus === 'vsv' && carrier !== 'severance') {
+            if (route === 'iv' && carrier !== 'tcell') {
+                out.deliveryRate *= 0.3;
+                out.penaltyMsg = "VSV의 짧은 복제주기(~6h) 대비 이동 지연 → 운반체 조기 파괴 페널티";
+                out.penaltySurvival = 35;
+            }
+        } else if (virus === 'vv') {
+            if (out.tumor === 'bone' || out.tumor === 'lymph') {
+                out.deliveryRate *= 1.4;
+                out.bonusMsg = "VV의 긴 eclipse 특성이 장거리 표적 이동에 보너스 효율 부여";
+            }
+        }
+        return out;
+    }
+
+    function getTimeText(carrier, virus) {
+        if (carrier === 'severance') return SEVERANCE_CARRIER.timeTaken;
+        if (virus === 'vsv') return "약 6시간 내외 (신속 방출)";
+        if (virus === 'vv') return "최대 48시간 (지연 eclipse)";
+        return "2~3일 (용해성 완만 방출)";
+    }
+
+    async function runSimulation() {
+        const tumor = document.getElementById('tumor').value;
+        const virus = document.getElementById('virus').value;
+        const carrier = document.getElementById('carrier').value;
+        const route = document.getElementById('route').value;
+
+        const logBox = document.getElementById('statusLog');
+        const warnBox = document.getElementById('warningBox');
+        logBox.innerHTML = "";
+        warnBox.classList.add('hidden');
+
+        await addLog(logBox, `🧬 [초기화] 주입 시퀀스 개시 → 바이러스: ${virus.toUpperCase()} | 운반체: ${carrier.toUpperCase()} | 경로: ${route.toUpperCase()}`, 100);
+
+        let deliveryRate, survivalRate = 100, dist, immuneIndex, penaltyMsg = null, bonusMsg = null;
+
+        if (carrier === 'severance') {
+            await addLog(logBox, `✨ [특수 기전] ${SEVERANCE_CARRIER.msg}`, 200);
+            await addLog(logBox, `📎 ${SEVERANCE_CARRIER.subMsg} (${SEVERANCE_CARRIER.ref})`, 200);
+            deliveryRate = SEVERANCE_CARRIER.deliveryRate;
+            survivalRate = SEVERANCE_CARRIER.survivalRate;
+            dist = { ...SEVERANCE_CARRIER.dist };
+            immuneIndex = SEVERANCE_CARRIER.immuneIndex;
+        } else {
+            // Stage 1: 운반체 유무에 따른 면역 노출도
+            if (carrier === 'naked') {
+                survivalRate -= 94;
+                immuneIndex = "최하 (직접 노출)";
+                if (route === 'iv') {
+                    deliveryRate = 0.0008;
+                    dist = { brain: 0, target: 0.01, liver: 65, lung: 25, spleen: 9.99, peritoneum: 0 };
+                    warnBox.classList.remove('hidden');
+                    await addLog(logBox, `🚨 [위험 관찰] 운반체 없는 단독 정맥 투여 감지. 중화항체·보체계에 의해 대부분 사멸 (Sarkisova et al. 2025, §1).`, 300);
+                }
+            } else {
+                survivalRate -= 15;
+                immuneIndex = "우수 (세포 차폐)";
+            }
+
+            const scenario = SCENARIO_TABLE[tumor];
+            await addLog(logBox, `🎯 대상 병변: ${scenario.label}`, 200);
+
+            const matched = scenario.isMatch(carrier, route);
+            const branch = matched ? scenario.match : scenario.mismatch;
+
+            if (deliveryRate === undefined) {
+                deliveryRate = branch.deliveryRate;
+                dist = { ...branch.dist };
+            }
+
+            await addLog(logBox, `${matched ? '✅ [매치]' : '⚠️ [비매치]'} ${branch.msg} (${branch.ref})`, 300);
+
+            // Stage 2: 바이러스 보정
+            const virusResult = applyVirusModifier({ deliveryRate, tumor }, virus, carrier, route);
+            deliveryRate = virusResult.deliveryRate;
+            if (virusResult.penaltyMsg) {
+                await addLog(logBox, `⚠️ [디버프] ${virusResult.penaltyMsg}`, 300);
+                survivalRate -= virusResult.penaltySurvival;
+            }
+            if (virusResult.bonusMsg) {
+                await addLog(logBox, `✨ [시너지] ${virusResult.bonusMsg}`, 300);
+            }
+        }
+
+        if (survivalRate < 0) survivalRate = 0.1;
+        const timeTaken = getTimeText(carrier, virus);
+
+        await addLog(logBox, `🏁 [시뮬레이션 완료] 연산 정량 데이터 도출 완료.`, 200);
+
+        // UI 업데이트
+        document.getElementById('infoTime').innerText = timeTaken;
+        document.getElementById('infoImmune').innerText = immuneIndex;
+        document.getElementById('infoSurvival').innerText = `${survivalRate.toFixed(1)}%`;
+
+        deliveryChart.data.datasets[0].data[1] = deliveryRate;
+        deliveryChart.update();
+
+        const updateOrganNode = (id, valId, percent) => {
+            const node = document.getElementById(id);
+            document.getElementById(valId).innerText = `${percent}%`;
+            let r = 71, g = 85, b = 105;
+            if (percent > 0 && percent <= 15) { r = 245; g = 158; b = 11; }
+            else if (percent > 15 && percent <= 40) { r = 249; g = 115; b = 22; }
+            else if (percent > 40) { r = 220; g = 38; b = 38; }
+            node.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.85)`;
+            node.style.boxShadow = percent > 30 ? `0 0 15px rgba(${r}, ${g}, ${b}, 0.6)` : 'none';
+        };
+
+        updateOrganNode('node-brain', 'val-brain', Math.round(dist.brain));
+        updateOrganNode('node-lung', 'val-lung', Math.round(dist.lung));
+        updateOrganNode('node-liver', 'val-liver', Math.round(dist.liver));
+        updateOrganNode('node-spleen', 'val-spleen', Math.round(dist.spleen));
+        updateOrganNode('node-peritoneum', 'val-peritoneum', Math.round(dist.peritoneum));
+
+        const targetNode = document.getElementById('node-target');
+        document.getElementById('val-target').innerText = `${deliveryRate.toFixed(3)}%`;
+        if (deliveryRate > 5) {
+            targetNode.style.backgroundColor = 'rgba(6, 182, 212, 0.9)';
+            targetNode.style.boxShadow = '0 0 20px rgba(6, 182, 212, 0.8)';
+        } else {
+            targetNode.style.backgroundColor = 'rgba(15, 23, 42, 0.8)';
+            targetNode.style.boxShadow = 'none';
+        }
+    }
     </script>
 </body>
 </html>
